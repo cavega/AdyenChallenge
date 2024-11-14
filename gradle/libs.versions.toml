@@ -1,20 +1,29 @@
 [versions]
-agp = "8.5.1"
-converterMoshi = "2.9.0"
-kotlin = "1.9.23"
-coreKtx = "1.13.1"
+agp = "8.5.2"
+converterMoshi = "2.11.0"
+kotlin = "2.0.21"
+coreKtx = "1.15.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
-lifecycleRuntimeKtx = "2.8.3"
-activityCompose = "1.9.0"
-composeBom = "2024.06.00"
-retrofit = "2.9.0"
+lifecycleRuntimeKtx = "2.8.7"
+activityCompose = "1.9.3"
+retrofit = "2.11.0"
 googleMaterialVersion = "1.12.0"
 moshiKotlinVersion = "1.15.1"
 kotlinxCoroutinesTestVersion = "1.8.1"
+composeBom = "2024.10.01"
+moshiVersion = "1.15.1"
+ksp = "2.0.21-1.0.27"
+runtimeLivedata = "1.7.5"
+fragmentVersion = "1.8.5"
+hilt = "2.51.1"
+hiltNavigationCompose = "1.2.0"
+okhttp = "4.12.0"
+coil = "2.7.0"
 
 [libraries]
+androidx-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata", version.ref = "runtimeLivedata" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 converter-moshi = { module = "com.squareup.retrofit2:converter-moshi", version.ref = "converterMoshi" }
 moshi-kotlin = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshiKotlinVersion" }
@@ -34,8 +43,20 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 google-android-material = { group = "com.google.android.material", name = "material", version.ref = "googleMaterialVersion" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTestVersion" }
+coil-compose = { group = "io.coil-kt", name ="coil-compose", version.ref = "coil"}
+
+androidx-fragment = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragmentVersion" }
+hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
+hilt-ksp = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
+hilt-navigation = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+okhttp-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
+moshi-ksp = { group = "com.squareup.moshi", name = "moshi-kotlin-codegen", version.ref = "moshiVersion" }
 
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
+android-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlin-hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }

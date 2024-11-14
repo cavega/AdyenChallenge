@@ -1,9 +1,13 @@
-import java.util.Properties
 import java.io.FileInputStream
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.android.ksp)
+    alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.kotlin.hilt.android)
 }
 
 // Access the local.properties file
@@ -18,12 +22,12 @@ val apiKey: String = localProperties.getProperty("API_KEY", "default_api_key_if_
 
 android {
     namespace = "com.adyen.android.assignment"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.adyen.android.assignment"
         minSdk = 30
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -46,19 +50,17 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
         buildConfig = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.13"
-    }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -77,10 +79,23 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.google.android.material)
+    implementation(libs.coil.compose)
 
     implementation(libs.retrofit)
     implementation(libs.converter.moshi)
     implementation(libs.moshi.kotlin)
+
+    implementation(libs.androidx.fragment)
+    implementation(libs.androidx.runtime.livedata)
+
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.ksp)
+    implementation(libs.hilt.navigation)
+
+    implementation(libs.okhttp.interceptor)
+    implementation(libs.moshi.kotlin)
+    //implementation(libs.retrofit.moshi.converter)
+    ksp(libs.moshi.ksp)
 
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
