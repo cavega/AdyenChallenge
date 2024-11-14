@@ -21,18 +21,17 @@ fun AdyenAppBar(
 ) {
     CenterAlignedTopAppBar(
         colors = TopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primary,
+            containerColor = MaterialTheme.colorScheme.surface,
             scrolledContainerColor = MaterialTheme.colorScheme.primaryContainer,
             navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
-            titleContentColor = MaterialTheme.colorScheme.onPrimary,
+            titleContentColor = MaterialTheme.colorScheme.onSurface,
             actionIconContentColor = MaterialTheme.colorScheme.onPrimary
         ),
         actions = actions,
         title = {
             Text(
                 text = title,
-                color = MaterialTheme.colorScheme.onPrimary,
-                fontSize = MaterialTheme.typography.titleMedium.fontSize,
+                fontSize = MaterialTheme.typography.titleLarge.fontSize,
             )
         },
         scrollBehavior = scrollBehavior,

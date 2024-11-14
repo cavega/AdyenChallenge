@@ -4,8 +4,9 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.adyen.android.assignment.astronomy.model.AstronomyItemUiModel
+import com.adyen.android.assignment.api.model.AstronomyPicture
 import com.adyen.android.assignment.astronomy.model.toAstronomyItemUiModel
+import com.adyen.android.assignment.astronomy.ui.list.AstronomyPhotosViewModel.SortType
 import com.adyen.android.assignment.astronomy.uistate.AstronomyPhotosListUiState
 import com.adyen.android.assignment.repository.PlanetsPhotosRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,11 +23,18 @@ class AstronomyPhotosViewModel @Inject constructor(
     private var _uiState = MutableLiveData<AstronomyPhotosListUiState>()
     val uiState = _uiState
 
+    private var sortType: SortType = SortType.Latest
+
     init {
         loadCollection()
     }
 
-    private fun loadCollection() {
+    fun sortPhotos(sortType: SortType) {
+        this.sortType = sortType
+        loadCollection(sortType)
+    }
+
+    fun loadCollection(sortType: SortType = SortType.Latest) {
         viewModelScope.launch {
             planetsRepository.getItems()
                 .onStart {
@@ -44,14 +52,44 @@ class AstronomyPhotosViewModel @Inject constructor(
                     if (response.isSuccessful) {
                         // We are filtering photos with missing url since the
                         // photos are the central feature of the app
-                        val items = response.body()?.filter { !it.url.isNullOrBlank() }
-                            ?.map { it.toAstronomyItemUiModel() }
-                            ?: emptyList<AstronomyItemUiModel>()
-                        _uiState.value = AstronomyPhotosListUiState.DataLoaded(items)
+                        val networkPhotosList =
+                            response.body()?.filter { !it.url.isNullOrBlank() } ?: emptyList()
+
+                        val sortedList =
+                            sortPhotosByType(networkPhotosList, sortType)
+                                .map { it.toAstronomyItemUiModel() }
+
+                        _uiState.value = AstronomyPhotosListUiState.DataLoaded(sortedList)
                     } else {
-                        _uiState.value = AstronomyPhotosListUiState.Error("No releases found")
+                        _uiState.value = AstronomyPhotosListUiState.Error(
+                            response.errorBody()?.string() ?: "No releases found"
+                        )
                     }
                 }
         }
+    }
+
+    private fun sortPhotosByType(
+        items: List<AstronomyPicture>,
+        sortType: SortType
+    ): List<AstronomyPicture> {
+        return when (sortType) {
+            SortType.Latest -> {
+                items.sortedByDescending { it.date }
+            }
+
+            SortType.Title -> {
+                items.sortedBy { it.title }
+            }
+
+            else -> {
+                items.sortedByDescending { it.date }
+            }
+        }
+    }
+
+    sealed class SortType {
+        object Latest : SortType()
+        object Title : SortType()
     }
 }

@@ -25,7 +25,11 @@ class MainActivity : ComponentActivity() {
 
         enableEdgeToEdge()
         setContent {
-            AdyenTheme {
+            /**
+             * Most apps in the industry support both light and dark themes.
+             * For now we are forcing dark theme to match the design.
+             */
+            AdyenTheme(darkTheme = true) {
                 AdyenApp()
             }
         }

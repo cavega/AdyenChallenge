@@ -1,6 +1,13 @@
 <resources>
     <string name="app_name">Android Assignment</string>
-    <string name="astronomy_photos_title">Our Universe</string>
+    <string name="astronomy_photos_title">Our universe</string>
     <string name="astronomy_photos_error_title">Oops! Something went wrong.</string>
     <string name="astronomy_photos_error_subtitle">Please refresh the page and try again.</string>
+    <string name="astronomy_photos_sort_latest">Latest</string>
+    <string name="astronomy_photos_sort_title">By Title</string>
+    <string name="astronomy_photos_reoder_list">Reorder list</string>
+    <string name="astronomy_photos_order_by_title">Reorder by title</string>
+    <string name="astronomy_photos_order_by_date">Reorder by date</string>
+    <string name="astronomy_photos_order_apply">Apply</string>
+    <string name="astronomy_photos_order_reset">Reset</string>
 </resources>

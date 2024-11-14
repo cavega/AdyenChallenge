@@ -1,7 +1,6 @@
 package com.adyen.android.assignment.astronomy.ui.common
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -37,10 +36,17 @@ fun LoadingComposable() {
 }
 
 @Composable
-fun ErrorComposable(modifier: Modifier, title: String, subtitle: String) {
+fun ErrorComposable(
+    modifier: Modifier,
+    title: String,
+    subtitle: String,
+    onRefreshClick: () -> Unit
+) {
     // TODO: Adjust margins for landscape mode
     Column(
-        modifier = modifier.fillMaxSize().padding(16.dp),
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -61,7 +67,7 @@ fun ErrorComposable(modifier: Modifier, title: String, subtitle: String) {
         Spacer(modifier = Modifier.height(36.dp))
         // TODO: style button according to theme
         Button(
-            onClick = { /*TODO*/ }
+            onClick = { onRefreshClick() }
         ) {
             Text(
                 text = "Refresh"
