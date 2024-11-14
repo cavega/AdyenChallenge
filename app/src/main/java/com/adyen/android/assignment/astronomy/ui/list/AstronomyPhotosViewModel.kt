@@ -9,6 +9,7 @@ import com.adyen.android.assignment.astronomy.model.toAstronomyItemUiModel
 import com.adyen.android.assignment.astronomy.ui.list.AstronomyPhotosViewModel.SortType
 import com.adyen.android.assignment.astronomy.uistate.AstronomyPhotosListUiState
 import com.adyen.android.assignment.repository.PlanetsPhotosRepository
+import com.adyen.android.assignment.repository.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onStart
@@ -36,11 +37,12 @@ class AstronomyPhotosViewModel @Inject constructor(
 
     fun loadCollection(sortType: SortType = SortType.Latest) {
         viewModelScope.launch {
-            planetsRepository.getItems()
+            planetsRepository.getPhotos()
                 .onStart {
                     _uiState.value = AstronomyPhotosListUiState.Loading
                 }
                 .catch {
+                    // TODO: We should log errors to Firebase or similar service
                     Log.e(
                         AstronomyPhotosViewModel::class.simpleName,
                         "Error loading photos",
@@ -49,21 +51,18 @@ class AstronomyPhotosViewModel @Inject constructor(
                     _uiState.value = AstronomyPhotosListUiState.Error("No releases found")
                 }
                 .collect { response ->
-                    if (response.isSuccessful) {
-                        // We are filtering photos with missing url since the
-                        // photos are the central feature of the app
-                        val networkPhotosList =
-                            response.body()?.filter { !it.url.isNullOrBlank() } ?: emptyList()
+                    when (response) {
+                        is Result.Success -> {
+                            val sortedList =
+                                sortPhotosByType(response.data, sortType)
+                                    .map { it.toAstronomyItemUiModel() }
 
-                        val sortedList =
-                            sortPhotosByType(networkPhotosList, sortType)
-                                .map { it.toAstronomyItemUiModel() }
+                            _uiState.value = AstronomyPhotosListUiState.DataLoaded(sortedList)
+                        }
 
-                        _uiState.value = AstronomyPhotosListUiState.DataLoaded(sortedList)
-                    } else {
-                        _uiState.value = AstronomyPhotosListUiState.Error(
-                            response.errorBody()?.string() ?: "No releases found"
-                        )
+                        is Result.Error -> {
+                            _uiState.value = AstronomyPhotosListUiState.Error(response.message)
+                        }
                     }
                 }
         }
