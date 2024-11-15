@@ -62,6 +62,7 @@ fun AstronomyPhotosScreen(
     viewModel: AstronomyPhotosViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.observeAsState(initial = AstronomyPhotosListUiState.Loading)
+    viewModel.loadCollection()
 
     Scaffold { innerPadding ->
         Box {
@@ -239,7 +240,7 @@ fun PhotoOrderDialogComposable(
     onDismiss: () -> Unit,
     onConfirm: (SortType) -> Unit
 ) {
-    var selectedSortOrder by remember { mutableStateOf<SortType>(SortType.Latest) }
+    var selectedSortOrder by remember { mutableStateOf<SortType>(SortType.Date) }
 
     if (!showDialog) return
 
@@ -275,10 +276,10 @@ fun PhotoOrderDialogComposable(
                 ) {
                     Text(text = stringResource(R.string.astronomy_photos_order_by_date))
                     RadioButton(
-                        selected = selectedSortOrder == SortType.Latest,
+                        selected = selectedSortOrder == SortType.Date,
                         onClick = {
                             selectedSortOrder =
-                                SortType.Latest
+                                SortType.Date
                         }
                     )
                 }

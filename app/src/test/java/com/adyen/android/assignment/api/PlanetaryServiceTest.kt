@@ -1,6 +1,5 @@
-package com.adyen.android.assignment
+package com.adyen.android.assignment.api
 
-import com.adyen.android.assignment.api.PlanetaryService
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 

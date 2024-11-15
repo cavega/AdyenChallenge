@@ -1,6 +1,5 @@
 package com.adyen.android.assignment.astronomy.ui.list
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -16,6 +15,14 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * This view model is responsible for getting all the data from the repository and
+ * producing the various UI states that allow the consumer (i.e. view) to render
+ * and update the UI accordingly.
+ *
+ * The ViewModel exposes an API that allows the view to request operations to be
+ * performed based on the various users taken by the user.
+ */
 @HiltViewModel
 class AstronomyPhotosViewModel @Inject constructor(
     private val planetsRepository: PlanetsPhotosRepository
@@ -24,30 +31,26 @@ class AstronomyPhotosViewModel @Inject constructor(
     private var _uiState = MutableLiveData<AstronomyPhotosListUiState>()
     val uiState = _uiState
 
-    private var sortType: SortType = SortType.Latest
-
-    init {
-        loadCollection()
-    }
+    private var sortType: SortType = SortType.Date
 
     fun sortPhotos(sortType: SortType) {
         this.sortType = sortType
-        loadCollection(sortType)
+        // We don't need to refresh the data when re-ordering the photos
+        loadCollection(sortType = sortType, forceRefresh = false)
     }
 
-    fun loadCollection(sortType: SortType = SortType.Latest) {
+    fun loadCollection(sortType: SortType = SortType.Date, forceRefresh: Boolean = true) {
         viewModelScope.launch {
-            planetsRepository.getPhotos()
+            // TODO: With a caching strategy (i.e. Room database) implemented by the
+            //  repository, we can keep can keep track of the last time the data was refreshed
+            //  to further minimize the number of API calls. At this moment we are
+            //  just using a in-memory cache.
+            planetsRepository.getPhotos(forceRefresh = forceRefresh)
                 .onStart {
                     _uiState.value = AstronomyPhotosListUiState.Loading
                 }
                 .catch {
                     // TODO: We should log errors to Firebase or similar service
-                    Log.e(
-                        AstronomyPhotosViewModel::class.simpleName,
-                        "Error loading photos",
-                        it
-                    )
                     _uiState.value = AstronomyPhotosListUiState.Error("No releases found")
                 }
                 .collect { response ->
@@ -73,7 +76,7 @@ class AstronomyPhotosViewModel @Inject constructor(
         sortType: SortType
     ): List<AstronomyPicture> {
         return when (sortType) {
-            SortType.Latest -> {
+            SortType.Date -> {
                 items.sortedByDescending { it.date }
             }
 
@@ -88,7 +91,7 @@ class AstronomyPhotosViewModel @Inject constructor(
     }
 
     sealed class SortType {
-        object Latest : SortType()
+        object Date : SortType()
         object Title : SortType()
     }
 }
